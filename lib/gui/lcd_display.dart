@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../model/engine.dart';
 
+const _backgroundColor = Color(0xFF808080);
+const _textColor = Color(0xFF242424);
+const _borderColor = Color(0xFFC0C0C0);
+
 /// Provides the main display for the calculator registers.
 class LcdDisplay extends StatelessWidget {
   LcdDisplay({super.key});
@@ -16,8 +20,9 @@ class LcdDisplay extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        border: Border.all(width: 6),
-        borderRadius: BorderRadius.circular(12),
+        color: _backgroundColor,
+        border: Border.all(width: 6, color: _borderColor),
+        borderRadius: BorderRadius.circular(18),
       ),
       child: Consumer<Engine>(
         builder: (context, model, child) {

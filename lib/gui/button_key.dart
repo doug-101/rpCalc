@@ -8,6 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../model/engine.dart';
 
+const _backgroundColor = Color(0xFF242424);
+const _textColor = Color(0xFFD0D0D0);
+const _borderColor = Color(0xFF808080);
+const _shadowColor = Color(0xFF101010);
+
 /// This defines buttons for the calculator GUI.
 class ButtonKey extends StatelessWidget {
   final String label;
@@ -31,37 +36,55 @@ class ButtonKey extends StatelessWidget {
     return Container(
       key: buttonKey,
       decoration: BoxDecoration(
-        border: Border.all(width: 4),
-        borderRadius: BorderRadius.circular(18),
+        border: Border.all(width: 2, color: _borderColor),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: _shadowColor,
+            offset: Offset(8.0, 8.0),
+            blurRadius: 4.0,
+          )
+        ],
       ),
       constraints: BoxConstraints(
         minWidth: double.infinity,
         minHeight: double.infinity,
       ),
-      child: InkWell(
-        onTap: onPressed,
-        child: FractionallySizedBox(
-          heightFactor: heightScaleFactor,
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: hasSuperscript
-                ? Text.rich(
-                    TextSpan(
-                      text: label.substring(0, label.length - 1),
-                      children: [
-                        WidgetSpan(
-                          child: Transform.translate(
-                            offset: const Offset(0.0, -4.0),
-                            child: Text(
-                              label.substring(label.length - 1),
-                              style: TextStyle(fontSize: 10),
+      child: Material(
+        color: _backgroundColor,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          onTap: onPressed,
+          child: FractionallySizedBox(
+            heightFactor: heightScaleFactor,
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: hasSuperscript
+                  ? Text.rich(
+                      TextSpan(
+                        text: label.substring(0, label.length - 1),
+                        style: TextStyle(color: _textColor),
+                        children: [
+                          WidgetSpan(
+                            child: Transform.translate(
+                              offset: const Offset(0.0, -4.0),
+                              child: Text(
+                                label.substring(label.length - 1),
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: _textColor,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    )
+                  : Text(
+                      label,
+                      style: TextStyle(color: _textColor),
                     ),
-                  )
-                : Text(label),
+            ),
           ),
         ),
       ),

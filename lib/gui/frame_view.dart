@@ -13,6 +13,11 @@ import '../model/engine.dart';
 import 'button_key.dart';
 import 'lcd_display.dart';
 
+const _backgroundColor = Color(0xFF404040);
+const _statusBackgroundColor = Color(0xFF303030);
+const _statusTextColor = Color(0xFFC0C0C0);
+const _statusborderColor = Color(0xFF242424);
+
 // Command buttons that span rows or columns.
 const _doubleRowSpanCmds = {'+', 'ENT'};
 const _doubleColumnSpanCmds = {'0'};
@@ -87,21 +92,22 @@ class _FrameViewState extends State<FrameView> {
         child: Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.all(20),
+          color: _backgroundColor,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Expanded(
-                flex: 4,
+                flex: 6,
                 child: LcdDisplay(),
               ),
               Expanded(
-                flex: 6,
+                flex: 8,
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: LayoutGrid(
                     columnSizes: [auto, auto, auto, auto, auto],
                     rowSizes: [auto, auto, auto, auto, auto, auto],
-                    columnGap: 10,
+                    columnGap: 14,
                     rowGap: 16,
                     children: [
                       for (var label in model.operCommands.keys)
@@ -118,13 +124,13 @@ class _FrameViewState extends State<FrameView> {
                 ),
               ),
               Expanded(
-                flex: 6,
+                flex: 8,
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 20),
                   child: LayoutGrid(
                     columnSizes: [auto, auto, auto, auto],
                     rowSizes: [auto, auto, auto, auto, auto],
-                    columnGap: 10,
+                    columnGap: 14,
                     rowGap: 16,
                     children: [
                       for (var label in model.numpadCommands.keys)
@@ -149,8 +155,9 @@ class _FrameViewState extends State<FrameView> {
                 child: Container(
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2),
-                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(width: 6, color: _statusborderColor),
+                    borderRadius: BorderRadius.circular(12),
+                    color: _statusBackgroundColor,
                   ),
                   child: Consumer<Engine>(
                     builder: (context, model, child) {
@@ -167,15 +174,20 @@ class _FrameViewState extends State<FrameView> {
                             child: FittedBox(
                               fit: BoxFit.contain,
                               alignment: Alignment.centerLeft,
-                              child: Text('> ${model.entryStr}'),
+                              child: Text(
+                                '> ${model.entryStr}',
+                                style: TextStyle(color: _statusTextColor),
+                              ),
                             ),
                           ),
                           Expanded(
                             child: FittedBox(
                               fit: BoxFit.contain,
                               alignment: Alignment.centerRight,
-                              child:
-                                  Text('$numFormat $numDecPlaces   $angleUnit'),
+                              child: Text(
+                                '$numFormat $numDecPlaces   $angleUnit',
+                                style: TextStyle(color: _statusTextColor),
+                              ),
                             ),
                           ),
                         ],
