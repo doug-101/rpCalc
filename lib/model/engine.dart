@@ -17,7 +17,7 @@ enum Mode {
   memStore,
   memRecall,
   decPlaces,
-  error
+  error,
 }
 
 /// This provides the core functionality of the RPN calculator.
@@ -111,6 +111,12 @@ class Engine extends ChangeNotifier {
   ///
   /// Also clears show mode and stores the stack in shared_preferences.
   void updateXString() {
+    if (!stack[0].isFinite) {
+      flag = Mode.error;
+      xString = stack[0].isInfinite ? 'Error 9' : 'Error 0';
+      readStoredStack();
+      return;
+    }
     xString = _formatNumber(stack[0]);
     showMode = false;
     writeStoredStack();
