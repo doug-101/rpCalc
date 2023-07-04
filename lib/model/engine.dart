@@ -31,6 +31,7 @@ class Engine extends ChangeNotifier {
   var flag = Mode.save;
   var entryStr = '';
   var showMode = false;
+  final historyList = <({String eqn, double result})>[];
 
   Engine() {
     operCommands['x2'] = squareEntry;
@@ -117,7 +118,7 @@ class Engine extends ChangeNotifier {
       readStoredStack();
       return;
     }
-    xString = _formatNumber(stack[0]);
+    xString = formatNumber(stack[0]);
     showMode = false;
     writeStoredStack();
   }
@@ -135,7 +136,7 @@ class Engine extends ChangeNotifier {
   /// Return list of strings for three previous registers, in reverse order.
   List<String> previousRegisterStrings() {
     return <String>[
-      for (var value in List.of(stack.skip(1)).reversed) _formatNumber(value),
+      for (var value in List.of(stack.skip(1)).reversed) formatNumber(value),
     ];
   }
 
@@ -255,7 +256,9 @@ class Engine extends ChangeNotifier {
   /// Handle a plus key press.
   void plusEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = '${formatNumber(stack[1])} + ${formatNumber(stack[0])}';
     stack.replaceXY(stack[1] + stack[0]);
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -264,7 +267,9 @@ class Engine extends ChangeNotifier {
   /// Handle a subtract key press.
   void subtractEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = '${formatNumber(stack[1])} - ${formatNumber(stack[0])}';
     stack.replaceXY(stack[1] - stack[0]);
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -273,7 +278,9 @@ class Engine extends ChangeNotifier {
   /// Handle a multiply key press.
   void multiplyEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = '${formatNumber(stack[1])} * ${formatNumber(stack[0])}';
     stack.replaceXY(stack[1] * stack[0]);
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -282,7 +289,9 @@ class Engine extends ChangeNotifier {
   /// Handle a divide key press.
   void divideEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = '${formatNumber(stack[1])} / ${formatNumber(stack[0])}';
     stack.replaceXY(stack[1] / stack[0]);
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -291,7 +300,9 @@ class Engine extends ChangeNotifier {
   /// Handle an x^2 key press.
   void squareEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = '${formatNumber(stack[0])}^2';
     stack[0] = stack[0] * stack[0];
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -300,7 +311,9 @@ class Engine extends ChangeNotifier {
   /// Handle a square root.
   void squareRootEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = 'SQRT(${formatNumber(stack[0])})';
     stack[0] = sqrt(stack[0]);
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -309,7 +322,9 @@ class Engine extends ChangeNotifier {
   /// Handle an arbitrary power key press.
   void powerOfEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = '(${formatNumber(stack[1])})^${formatNumber(stack[0])}';
     stack[0] = pow(stack[1], stack[0]).toDouble();
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -318,7 +333,9 @@ class Engine extends ChangeNotifier {
   /// Handle an arbitrary root key press.
   void rootOfEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = '(${formatNumber(stack[1])})^(1/${formatNumber(stack[0])})';
     stack[0] = pow(stack[1], 1 / stack[0]).toDouble();
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -327,7 +344,9 @@ class Engine extends ChangeNotifier {
   /// Handle a reciprocal key press.
   void reciprocalEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = '1 / ${formatNumber(stack[0])}';
     stack[0] = 1 / stack[0];
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -336,9 +355,11 @@ class Engine extends ChangeNotifier {
   /// Handle a SIN key press.
   void sinEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = 'sin(${formatNumber(stack[0])})';
     stack[0] = sin(
       prefs.getBool('use_degrees') ?? true ? stack[0] * pi / 180 : stack[0],
     );
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -347,9 +368,11 @@ class Engine extends ChangeNotifier {
   /// Handle a COS key press.
   void cosEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = 'cos(${formatNumber(stack[0])})';
     stack[0] = cos(
       prefs.getBool('use_degrees') ?? true ? stack[0] * pi / 180 : stack[0],
     );
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -358,9 +381,11 @@ class Engine extends ChangeNotifier {
   /// Handle a TAN key press.
   void tanEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = 'tan(${formatNumber(stack[0])})';
     stack[0] = tan(
       prefs.getBool('use_degrees') ?? true ? stack[0] * pi / 180 : stack[0],
     );
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -369,7 +394,9 @@ class Engine extends ChangeNotifier {
   /// Handle a LN key press for a natural log.
   void logEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = 'ln(${formatNumber(stack[0])})';
     stack[0] = log(stack[0]);
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -378,7 +405,9 @@ class Engine extends ChangeNotifier {
   /// Handle a e^X key press for an inverse natural log.
   void invLogEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = 'e^${formatNumber(stack[0])}';
     stack[0] = exp(stack[0]);
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -387,8 +416,10 @@ class Engine extends ChangeNotifier {
   /// Handle a ASIN key press.
   void asinEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = 'asin(${formatNumber(stack[0])})';
     stack[0] = asin(stack[0]) /
         (prefs.getBool('use_degrees') ?? true ? pi / 180 : 1.0);
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -397,8 +428,10 @@ class Engine extends ChangeNotifier {
   /// Handle a ACOS key press.
   void acosEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = 'acos(${formatNumber(stack[0])})';
     stack[0] = acos(stack[0]) /
         (prefs.getBool('use_degrees') ?? true ? pi / 180 : 1.0);
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -407,8 +440,10 @@ class Engine extends ChangeNotifier {
   /// Handle a ATAN key press.
   void atanEntry() {
     if (inDisabledCommandMode()) return;
+    var eqn = 'atan(${formatNumber(stack[0])})';
     stack[0] = atan(stack[0]) /
         (prefs.getBool('use_degrees') ?? true ? pi / 180 : 1.0);
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -417,7 +452,9 @@ class Engine extends ChangeNotifier {
   /// Handle a LOG key press for a base 10 log.
   void log10Entry() {
     if (inDisabledCommandMode()) return;
+    var eqn = 'log(${formatNumber(stack[0])})';
     stack[0] = log(stack[0]) / ln10;
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -426,7 +463,9 @@ class Engine extends ChangeNotifier {
   /// Handle a tn^X key press for an inverse base 10 log.
   void invLog10Entry() {
     if (inDisabledCommandMode()) return;
+    var eqn = '10^${formatNumber(stack[0])}';
     stack[0] = pow(10.0, stack[0]).toDouble();
+    historyList.add((eqn: eqn, result: stack[0]));
     flag = Mode.save;
     updateXString();
     notifyListeners();
@@ -495,7 +534,7 @@ class Engine extends ChangeNotifier {
       updateXString();
       showMode = false;
     } else {
-      xString = _formatNumber(stack[0], useFixed: false, numDecPlaces: 12);
+      xString = formatNumber(stack[0], useFixed: false, numDecPlaces: 12);
       showMode = true;
     }
     notifyListeners();
@@ -624,7 +663,7 @@ class Engine extends ChangeNotifier {
 /// Format the given number using current option settings.
 ///
 /// Use system preferences if [useFixed] and [numDecPlaces] are not given.
-String _formatNumber(double number, {bool? useFixed, int? numDecPlaces}) {
+String formatNumber(double number, {bool? useFixed, int? numDecPlaces}) {
   if (useFixed == null) {
     useFixed = prefs.getBool('use_fixed_nums') ?? true;
   }

@@ -41,7 +41,10 @@ void main() async {
       child: MaterialApp(
         title: 'rpCalc',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown),
+          colorScheme: ColorScheme.fromSeed(
+            brightness: Brightness.dark,
+            seedColor: Colors.brown,
+          ),
           useMaterial3: true,
         ),
         home: FrameView(),

@@ -1,4 +1,4 @@
-// button_key.dart, a widget for each calculator button.
+// calc_button.dart, a widget for each calculator button.
 // rpCalc, a calculator using reverse polish notation.
 // Copyright (c) 2023, Douglas W. Bell.
 // Free software, GPL v2 or later.
@@ -14,14 +14,14 @@ const _borderColor = Color(0xFF808080);
 const _shadowColor = Color(0xFF101010);
 
 /// This defines buttons for the calculator GUI.
-class ButtonKey extends StatelessWidget {
+class CalcButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
-  final GlobalKey buttonKey;
+  final Key buttonKey;
   final bool hasSuperscript;
   final double heightScaleFactor;
 
-  ButtonKey({
+  CalcButton({
     super.key,
     required this.label,
     required this.buttonKey,

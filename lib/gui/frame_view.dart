@@ -10,13 +10,17 @@ import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:provider/provider.dart';
 import '../main.dart' show prefs;
 import '../model/engine.dart';
-import 'button_key.dart';
+import 'calc_button.dart';
+import 'history_view.dart';
 import 'lcd_display.dart';
+import 'memory_view.dart';
 
 const _backgroundColor = Color(0xFF404040);
 const _statusBackgroundColor = Color(0xFF303030);
 const _statusTextColor = Color(0xFFC0C0C0);
 const _statusborderColor = Color(0xFF242424);
+const _drawerHeaderColor = Color(0xFFD0D0D0);
+const _drawerHeaderTextColor = Color(0xFF242424);
 
 // Command buttons that span rows or columns.
 const _doubleRowSpanCmds = {'+', 'ENT'};
@@ -35,6 +39,8 @@ class FrameView extends StatefulWidget {
 class _FrameViewState extends State<FrameView> {
   final buttonKeys = <String, GlobalKey>{};
 
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
   /// Programmatically press a button for operation and graphical affect.
   void simulateKeyPress(String keyId) {
     final buttonKey = buttonKeys[keyId]!;
@@ -50,21 +56,100 @@ class _FrameViewState extends State<FrameView> {
     );
   }
 
+  /// Open the drawer using the OPT key press.
+  void openDrawer() {
+    scaffoldKey.currentState?.openDrawer();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final model = Provider.of<Engine>(context, listen: false);
+    for (var label in model.operCommands.keys) {
+      buttonKeys[label.toUpperCase()] = GlobalKey();
+    }
+    for (var label in model.numpadCommands.keys) {
+      buttonKeys[label.toUpperCase()] = GlobalKey();
+    }
+    // Set exit command in model to pop this widget.
+    // TODO: Test in other platforms.
+    model.operCommands['OFF'] = SystemNavigator.pop;
+    // Set OPT command to open the drawer.
+    model.numpadCommands['OPT'] = openDrawer;
+  }
+
   @override
   Widget build(BuildContext context) {
     final model = Provider.of<Engine>(context, listen: false);
-    if (buttonKeys.isEmpty) {
-      for (var label in model.operCommands.keys) {
-        buttonKeys[label.toUpperCase()] = GlobalKey();
-      }
-      for (var label in model.numpadCommands.keys) {
-        buttonKeys[label.toUpperCase()] = GlobalKey();
-      }
-      // Set exit command in model to pop this widget.
-      // TODO: Test in other platforms.
-      model.operCommands['OFF'] = SystemNavigator.pop;
-    }
     return Scaffold(
+      key: scaffoldKey,
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: _drawerHeaderColor,
+              ),
+              child: Text(
+                'rpCalc',
+                style: TextStyle(
+                  color: _drawerHeaderTextColor,
+                  fontSize: 48,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.history),
+              title: const Text('History View'),
+              onTap: () async {
+                Navigator.pop(context);
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HistoryView(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.storage),
+              title: const Text('Memory View'),
+              onTap: () async {
+                Navigator.pop(context);
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MemoryView(),
+                  ),
+                );
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: const Icon(Icons.help_outline),
+              title: const Text('Help View'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: const Text('About rpCalc'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
       body: Focus(
         autofocus: true,
         onKeyEvent: (node, event) {
@@ -112,7 +197,7 @@ class _FrameViewState extends State<FrameView> {
                     children: [
                       for (var label in model.operCommands.keys)
                         GridPlacement(
-                          child: ButtonKey(
+                          child: CalcButton(
                             label: label,
                             buttonKey: buttonKeys[label.toUpperCase()]!,
                             onPressed: model.operCommands[label]!,
@@ -138,7 +223,7 @@ class _FrameViewState extends State<FrameView> {
                           rowSpan: _doubleRowSpanCmds.contains(label) ? 2 : 1,
                           columnSpan:
                               _doubleColumnSpanCmds.contains(label) ? 2 : 1,
-                          child: ButtonKey(
+                          child: CalcButton(
                             label: label,
                             buttonKey: buttonKeys[label.toUpperCase()]!,
                             onPressed: model.numpadCommands[label]!,
