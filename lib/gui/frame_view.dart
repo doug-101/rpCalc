@@ -3,17 +3,20 @@
 // Copyright (c) 2023, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
+import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:provider/provider.dart';
-import '../main.dart' show prefs;
+import 'package:window_manager/window_manager.dart';
+import '../main.dart' show prefs, saveWindowGeo;
 import '../model/engine.dart';
 import 'calc_button.dart';
 import 'history_view.dart';
 import 'lcd_display.dart';
 import 'memory_view.dart';
+import 'settings_edit.dart';
 
 const _backgroundColor = Color(0xFF404040);
 const _statusBackgroundColor = Color(0xFF303030);
@@ -36,7 +39,7 @@ class FrameView extends StatefulWidget {
   State<FrameView> createState() => _FrameViewState();
 }
 
-class _FrameViewState extends State<FrameView> {
+class _FrameViewState extends State<FrameView> with WindowListener {
   final buttonKeys = <String, GlobalKey>{};
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -64,6 +67,9 @@ class _FrameViewState extends State<FrameView> {
   @override
   void initState() {
     super.initState();
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      windowManager.addListener(this);
+    }
     final model = Provider.of<Engine>(context, listen: false);
     for (var label in model.operCommands.keys) {
       buttonKeys[label.toUpperCase()] = GlobalKey();
@@ -79,75 +85,113 @@ class _FrameViewState extends State<FrameView> {
   }
 
   @override
+  void dispose() {
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      windowManager.removeListener(this);
+    }
+    super.dispose();
+  }
+
+  /// Call main function to save window geometry after a resize.
+  @override
+  void onWindowResize() async {
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      await saveWindowGeo();
+    }
+  }
+
+  /// Call main function to save window geometry after a move.
+  @override
+  void onWindowMove() async {
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      await saveWindowGeo();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final model = Provider.of<Engine>(context, listen: false);
+    final ratio = prefs.getDouble('view_scale') ?? 1.0;
     return Scaffold(
       key: scaffoldKey,
       drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: _drawerHeaderColor,
-              ),
-              child: Text(
-                'rpCalc',
-                style: TextStyle(
-                  color: _drawerHeaderTextColor,
-                  fontSize: 48,
+        child: FractionallySizedBox(
+          widthFactor: 1 / ratio,
+          heightFactor: 1 / ratio,
+          child: Transform.scale(
+            scale: ratio,
+            child: ListView(
+              children: <Widget>[
+                DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: _drawerHeaderColor,
+                  ),
+                  child: Text(
+                    'rpCalc',
+                    style: TextStyle(
+                      color: _drawerHeaderTextColor,
+                      fontSize: 48,
+                    ),
+                  ),
                 ),
-              ),
+                ListTile(
+                  leading: const Icon(Icons.history),
+                  title: const Text('History View'),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HistoryView(),
+                      ),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.storage),
+                  title: const Text('Memory View'),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MemoryView(),
+                      ),
+                    );
+                  },
+                ),
+                Divider(),
+                ListTile(
+                  leading: const Icon(Icons.settings),
+                  title: const Text('Settings'),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SettingEdit(),
+                      ),
+                    );
+                  },
+                ),
+                Divider(),
+                ListTile(
+                  leading: const Icon(Icons.help_outline),
+                  title: const Text('Help View'),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.info_outline),
+                  title: const Text('About rpCalc'),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.history),
-              title: const Text('History View'),
-              onTap: () async {
-                Navigator.pop(context);
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HistoryView(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.storage),
-              title: const Text('Memory View'),
-              onTap: () async {
-                Navigator.pop(context);
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MemoryView(),
-                  ),
-                );
-              },
-            ),
-            Divider(),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            Divider(),
-            ListTile(
-              leading: const Icon(Icons.help_outline),
-              title: const Text('Help View'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.info_outline),
-              title: const Text('About rpCalc'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
+          ),
         ),
       ),
       body: Focus(
@@ -182,11 +226,11 @@ class _FrameViewState extends State<FrameView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Expanded(
-                flex: 6,
+                flex: 4,
                 child: LcdDisplay(),
               ),
               Expanded(
-                flex: 8,
+                flex: 6,
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: LayoutGrid(
@@ -209,7 +253,7 @@ class _FrameViewState extends State<FrameView> {
                 ),
               ),
               Expanded(
-                flex: 8,
+                flex: 6,
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 20),
                   child: LayoutGrid(

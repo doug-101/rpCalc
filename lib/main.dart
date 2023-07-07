@@ -3,18 +3,22 @@
 // Copyright (c) 2023, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:window_manager/window_manager.dart';
 import 'gui/frame_view.dart';
 import 'model/engine.dart';
 
 /// [prefs] is the global shared_preferences instance.
 late final SharedPreferences prefs;
 
+/// This is initially false to avoid saving window geometry during setup.
+bool allowSaveWindowGeo = false;
+
 void main() async {
-  prefs = await SharedPreferences.getInstance();
   LicenseRegistry.addLicense(
     () => Stream<LicenseEntry>.value(
       const LicenseEntryWithLineBreaks(
@@ -35,6 +39,33 @@ void main() async {
       ),
     ),
   );
+  WidgetsFlutterBinding.ensureInitialized();
+  prefs = await SharedPreferences.getInstance();
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    await windowManager.ensureInitialized();
+    var size = Size(500.0, 900.0);
+    double? offsetX, offsetY;
+    if (prefs.getBool('save_window_geo') ?? true) {
+      size = Size(
+        prefs.getDouble('win_size_x') ?? 500.0,
+        prefs.getDouble('win_size_y') ?? 900.0,
+      );
+      offsetX = prefs.getDouble('win_pos_x');
+      offsetY = prefs.getDouble('win_pos_y');
+    }
+    // Setting the size twice (early and later) to work around linux problems.
+    await windowManager.setSize(size);
+    windowManager.waitUntilReadyToShow(null, () async {
+      await windowManager.setTitle('rpCalc');
+      await windowManager.setMinimumSize(Size(350, 800));
+      await windowManager.setSize(size);
+      if (offsetX != null && offsetY != null) {
+        await windowManager.setPosition(Offset(offsetX, offsetY));
+      }
+      await windowManager.show();
+      allowSaveWindowGeo = prefs.getBool('save_window_geo') ?? true;
+    });
+  }
   runApp(
     ChangeNotifierProvider<Engine>(
       create: (context) => Engine(),
@@ -51,4 +82,13 @@ void main() async {
       ),
     ),
   );
+}
+ 
+Future<void> saveWindowGeo() async {
+  if (!allowSaveWindowGeo) return;
+  final bounds = await windowManager.getBounds();
+  await prefs.setDouble('win_size_x', bounds.size.width);
+  await prefs.setDouble('win_size_y', bounds.size.height);
+  await prefs.setDouble('win_pos_x', bounds.left);
+  await prefs.setDouble('win_pos_y', bounds.top);
 }

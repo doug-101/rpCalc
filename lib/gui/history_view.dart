@@ -5,6 +5,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../main.dart' show prefs;
 import '../model/engine.dart';
 
 /// This provides a list with calculation history.
@@ -19,30 +20,38 @@ class _HistoryViewState extends State<HistoryView> {
   @override
   Widget build(BuildContext context) {
     final model = Provider.of<Engine>(context, listen: false);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('History - rpCalc'),
-      ),
-      body: SingleChildScrollView(
-        child: DataTable(
-          headingTextStyle: TextStyle(fontWeight: FontWeight.bold),
-          columns: const <DataColumn>[
-            DataColumn(
-              label: Text('Equation'),
+    final ratio = prefs.getDouble('view_scale') ?? 1.0;
+    return FractionallySizedBox(
+      widthFactor: 1 / ratio,
+      heightFactor: 1 / ratio,
+      child: Transform.scale(
+        scale: ratio,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('History - rpCalc'),
+          ),
+          body: SingleChildScrollView(
+            child: DataTable(
+              headingTextStyle: TextStyle(fontWeight: FontWeight.bold),
+              columns: const <DataColumn>[
+                DataColumn(
+                  label: Text('Equation'),
+                ),
+                DataColumn(
+                  label: Text('Result'),
+                ),
+              ],
+              rows: <DataRow>[
+                for (var item in model.historyList)
+                  DataRow(
+                    cells: <DataCell>[
+                      DataCell(SelectableText(item.eqn)),
+                      DataCell(SelectableText(formatNumber(item.result))),
+                    ],
+                  ),
+              ],
             ),
-            DataColumn(
-              label: Text('Result'),
-            ),
-          ],
-          rows: <DataRow>[
-            for (var item in model.historyList)
-              DataRow(
-                cells: <DataCell>[
-                  DataCell(SelectableText(item.eqn)),
-                  DataCell(SelectableText(formatNumber(item.result))),
-                ],
-              ),
-          ],
+          ),
         ),
       ),
     );
