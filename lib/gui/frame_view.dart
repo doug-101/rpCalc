@@ -8,11 +8,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 import '../main.dart' show prefs, saveWindowGeo;
 import '../model/engine.dart';
 import 'calc_button.dart';
+import 'help_view.dart';
 import 'history_view.dart';
 import 'lcd_display.dart';
 import 'memory_view.dart';
@@ -178,15 +180,43 @@ class _FrameViewState extends State<FrameView> with WindowListener {
                 ListTile(
                   leading: const Icon(Icons.help_outline),
                   title: const Text('Help View'),
-                  onTap: () {
+                  onTap: () async {
                     Navigator.pop(context);
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HelpView(),
+                      ),
+                    );
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.info_outline),
                   title: const Text('About rpCalc'),
-                  onTap: () {
+                  onTap: () async {
                     Navigator.pop(context);
+                    final packageInfo = await PackageInfo.fromPlatform();
+                    final ratio = prefs.getDouble('view_scale') ?? 1.0;
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return FractionallySizedBox(
+                          widthFactor: 1 / ratio,
+                          heightFactor: 1 / ratio,
+                          child: Transform.scale(
+                            scale: ratio,
+                            child: AboutDialog(
+                              applicationName: 'rpCalc',
+                              applicationVersion:
+                                  'Version ${packageInfo.version}',
+                              applicationLegalese: '©2023 by Douglas W. Bell',
+                              applicationIcon:
+                                  Image.asset('assets/images/calc_icon_48.png'),
+                            ),
+                          ),
+                        );
+                      },
+                    );
                   },
                 ),
               ],
