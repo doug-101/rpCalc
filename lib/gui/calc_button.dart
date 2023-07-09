@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../model/engine.dart';
 
-const _backgroundColor = Color(0xFF242424);
-const _textColor = Color(0xFFD0D0D0);
-const _borderColor = Color(0xFF808080);
+const _backgroundColor = Color(0xFF241b12);
+const _textColor = Color(0xFFe6cdb3);
+const _borderColor = Color(0xFF807366);
 const _shadowColor = Color(0xFF101010);
 
 /// This defines buttons for the calculator GUI.
@@ -37,12 +37,12 @@ class CalcButton extends StatelessWidget {
       key: buttonKey,
       decoration: BoxDecoration(
         border: Border.all(width: 2, color: _borderColor),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: _shadowColor,
-            offset: Offset(8.0, 8.0),
-            blurRadius: 4.0,
+            offset: Offset(4.0, 4.0),
+            blurRadius: 2.0,
           )
         ],
       ),
@@ -52,7 +52,7 @@ class CalcButton extends StatelessWidget {
       ),
       child: Material(
         color: _backgroundColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
         child: InkWell(
           onTap: onPressed,
           child: FractionallySizedBox(

@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../model/engine.dart';
 
-const _backgroundColor = Color(0xFF808080);
-const _textColor = Color(0xFF242424);
-const _borderColor = Color(0xFFC0C0C0);
+const _backgroundColor = Color(0xFF807366);
+const _textColor = Color(0xFFe6cdb3);
+const _borderColor = Color(0xFFc0ad99);
 
 /// Provides the main display for the calculator registers.
 class LcdDisplay extends StatelessWidget {

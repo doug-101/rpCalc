@@ -43,7 +43,7 @@ void main() async {
   prefs = await SharedPreferences.getInstance();
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     await windowManager.ensureInitialized();
-    var size = Size(500.0, 900.0);
+    var size = Size(500.0, 800.0);
     double? offsetX, offsetY;
     if (prefs.getBool('save_window_geo') ?? true) {
       size = Size(
@@ -57,7 +57,7 @@ void main() async {
     await windowManager.setSize(size);
     windowManager.waitUntilReadyToShow(null, () async {
       await windowManager.setTitle('rpCalc');
-      await windowManager.setMinimumSize(Size(350, 800));
+      await windowManager.setMinimumSize(Size(270.0, 600.0));
       await windowManager.setSize(size);
       if (offsetX != null && offsetY != null) {
         await windowManager.setPosition(Offset(offsetX, offsetY));

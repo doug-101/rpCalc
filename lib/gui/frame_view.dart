@@ -20,12 +20,12 @@ import 'lcd_display.dart';
 import 'memory_view.dart';
 import 'settings_edit.dart';
 
-const _backgroundColor = Color(0xFF404040);
-const _statusBackgroundColor = Color(0xFF303030);
-const _statusTextColor = Color(0xFFC0C0C0);
-const _statusborderColor = Color(0xFF242424);
-const _drawerHeaderColor = Color(0xFFD0D0D0);
-const _drawerHeaderTextColor = Color(0xFF242424);
+const _backgroundColor = Color(0xFF403020);
+const _statusBackgroundColor = Color(0xFF302418);
+const _statusTextColor = Color(0xFFd1baa3);
+const _statusborderColor = Color(0xFF483624);
+const _drawerHeaderColor = Color(0xFFd0a67d);
+const _drawerHeaderTextColor = Color(0xFF241b12);
 
 // Command buttons that span rows or columns.
 const _doubleRowSpanCmds = {'+', 'ENT'};
@@ -132,7 +132,7 @@ class _FrameViewState extends State<FrameView> with WindowListener {
                     'rpCalc',
                     style: TextStyle(
                       color: _drawerHeaderTextColor,
-                      fontSize: 48,
+                      fontSize: 32,
                     ),
                   ),
                 ),
@@ -250,7 +250,7 @@ class _FrameViewState extends State<FrameView> with WindowListener {
         },
         child: Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(10),
           color: _backgroundColor,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -262,12 +262,12 @@ class _FrameViewState extends State<FrameView> with WindowListener {
               Expanded(
                 flex: 6,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20),
+                  padding: EdgeInsets.symmetric(vertical: 10),
                   child: LayoutGrid(
                     columnSizes: [auto, auto, auto, auto, auto],
                     rowSizes: [auto, auto, auto, auto, auto, auto],
-                    columnGap: 14,
-                    rowGap: 16,
+                    columnGap: 7,
+                    rowGap: 9,
                     children: [
                       for (var label in model.operCommands.keys)
                         GridPlacement(
@@ -285,12 +285,12 @@ class _FrameViewState extends State<FrameView> with WindowListener {
               Expanded(
                 flex: 6,
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: EdgeInsets.only(bottom: 10),
                   child: LayoutGrid(
                     columnSizes: [auto, auto, auto, auto],
                     rowSizes: [auto, auto, auto, auto, auto],
-                    columnGap: 14,
-                    rowGap: 16,
+                    columnGap: 7,
+                    rowGap: 9,
                     children: [
                       for (var label in model.numpadCommands.keys)
                         GridPlacement(
@@ -312,9 +312,9 @@ class _FrameViewState extends State<FrameView> with WindowListener {
               Expanded(
                 flex: 1,
                 child: Container(
-                  padding: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    border: Border.all(width: 6, color: _statusborderColor),
+                    border: Border.all(width: 4, color: _statusborderColor),
                     borderRadius: BorderRadius.circular(12),
                     color: _statusBackgroundColor,
                   ),
