@@ -194,6 +194,18 @@ class Engine extends ChangeNotifier {
       return null;
     }
     if (inDisabledCommandMode()) return null;
+    if (ch == '\t') {
+      if (entryStr.isNotEmpty) {
+        try {
+          var cmd = allCommands.keys
+              .singleWhere((key) => key.startsWith(entryStr.toUpperCase()));
+          entryStr = '';
+          notifyListeners();
+          return cmd.toUpperCase();
+        } on StateError {}
+      }
+      return null;
+    }
     var newStr = '$entryStr$ch'.toUpperCase();
     if (entryStr.isNotEmpty && allCommands.containsKey(newStr)) {
       entryStr = '';
@@ -203,6 +215,7 @@ class Engine extends ChangeNotifier {
     if (allCommands.keys.any((key) => key.startsWith(newStr))) {
       entryStr = '$entryStr$ch';
       notifyListeners();
+      return null;
     }
   }
 
