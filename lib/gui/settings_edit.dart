@@ -153,6 +153,31 @@ class _SettingEditState extends State<SettingEdit> {
                   ),
                   TextFormField(
                     initialValue:
+                        (prefs.getInt('store_history_count') ?? 50).toString(),
+                    decoration: const InputDecoration(
+                      labelText: 'Maximum History Entries',
+                    ),
+                    validator: (String? value) {
+                      if (value != null && value.isNotEmpty) {
+                        var count = int.tryParse(value);
+                        if (count == null) {
+                          return 'Must be an integer';
+                        }
+                        if (count < 0) {
+                          return 'Must be greater than or equal to zero';
+                        }
+                      }
+                      return null;
+                    },
+                    onSaved: (String? value) async {
+                      if (value != null && value.isNotEmpty) {
+                        await prefs.setInt(
+                            'store_history_count', int.parse(value));
+                      }
+                    },
+                  ),
+                  TextFormField(
+                    initialValue:
                         (prefs.getDouble('view_scale') ?? 1.0).toString(),
                     decoration: const InputDecoration(
                       labelText: 'App view scale ratio',

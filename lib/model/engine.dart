@@ -121,6 +121,12 @@ class Engine extends ChangeNotifier {
     xString = formatNumber(stack[0]);
     showMode = false;
     writeStoredStack();
+    if (historyList.length > (prefs.getInt('store_history_count') ?? 50)) {
+      historyList.removeRange(
+        0,
+        historyList.length - (prefs.getInt('store_history_count') ?? 50),
+      );
+    }
   }
 
   /// Set [stack[0]] based on [numString], return true on success.
