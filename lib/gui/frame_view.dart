@@ -256,7 +256,7 @@ class _FrameViewState extends State<FrameView> with WindowListener {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Expanded(
-                flex: 4,
+                flex: 5,
                 child: LcdDisplay(),
               ),
               Expanded(

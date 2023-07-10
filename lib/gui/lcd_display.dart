@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import '../model/engine.dart';
 
 const _backgroundColor = Color(0xFF807366);
-const _textColor = Color(0xFFe6cdb3);
+const _textColor = Color(0xFF241b12);
 const _borderColor = Color(0xFFc0ad99);
 
 /// Provides the main display for the calculator registers.
@@ -33,8 +33,22 @@ class LcdDisplay extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 for (var numString in model.previousRegisterStrings())
-                  Text(numString, style: TextStyle(fontSize: 18)),
-                Text(model.xString, style: TextStyle(fontSize: 24)),
+                  Text(
+                    numString,
+                    style: TextStyle(
+                      fontFamily: 'LCD_16',
+                      fontSize: 18,
+                      color: _textColor,
+                    ),
+                  ),
+                Text(
+                  model.xString,
+                  style: TextStyle(
+                    fontFamily: 'LCD_16',
+                    fontSize: 24,
+                    color: _textColor,
+                  ),
+                ),
               ],
             ),
           );
