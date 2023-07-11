@@ -3,7 +3,7 @@
 // Copyright (c) 2023, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../main.dart' show prefs, allowSaveWindowGeo, saveWindowGeo;
@@ -65,9 +65,10 @@ class _SettingEditState extends State<SettingEdit> {
               padding: const EdgeInsets.all(10.0),
               child: ListView(
                 children: <Widget>[
-                  if (Platform.isLinux ||
-                      Platform.isWindows ||
-                      Platform.isMacOS)
+                  if (!kIsWeb &&
+                      (defaultTargetPlatform == TargetPlatform.linux ||
+                          defaultTargetPlatform == TargetPlatform.windows ||
+                          defaultTargetPlatform == TargetPlatform.macOS))
                     BoolFormField(
                       initialValue: prefs.getBool('save_window_geo') ?? true,
                       heading: 'Remember Window Position and Size',

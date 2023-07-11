@@ -64,6 +64,12 @@ flutter_launcher_icons:
   remove_alpha_ios: true
   adaptive_icon_foreground: "assets/launcher/calc_icon_108.png"
   adaptive_icon_background: "#ffffff"
+  windows:
+    generate: true
+    image_path: "assets/launcher/calc_icon_1024.png"
+  web:
+    generate: true
+    image_path: "assets/launcher/calc_icon_1024.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

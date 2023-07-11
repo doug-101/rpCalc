@@ -3,7 +3,6 @@
 // Copyright (c) 2023, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +40,10 @@ void main() async {
   );
   WidgetsFlutterBinding.ensureInitialized();
   prefs = await SharedPreferences.getInstance();
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+  if (!kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.linux ||
+          defaultTargetPlatform == TargetPlatform.windows ||
+          defaultTargetPlatform == TargetPlatform.macOS)) {
     await windowManager.ensureInitialized();
     var size = Size(500.0, 800.0);
     double? offsetX, offsetY;
@@ -83,7 +85,7 @@ void main() async {
     ),
   );
 }
- 
+
 Future<void> saveWindowGeo() async {
   if (!allowSaveWindowGeo) return;
   final bounds = await windowManager.getBounds();

@@ -3,7 +3,7 @@
 // Copyright (c) 2023, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,7 +69,10 @@ class _FrameViewState extends State<FrameView> with WindowListener {
   @override
   void initState() {
     super.initState();
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    if (!kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.linux ||
+            defaultTargetPlatform == TargetPlatform.windows ||
+            defaultTargetPlatform == TargetPlatform.macOS)) {
       windowManager.addListener(this);
     }
     final model = Provider.of<Engine>(context, listen: false);
@@ -88,7 +91,10 @@ class _FrameViewState extends State<FrameView> with WindowListener {
 
   @override
   void dispose() {
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    if (!kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.linux ||
+            defaultTargetPlatform == TargetPlatform.windows ||
+            defaultTargetPlatform == TargetPlatform.macOS)) {
       windowManager.removeListener(this);
     }
     super.dispose();
@@ -97,7 +103,10 @@ class _FrameViewState extends State<FrameView> with WindowListener {
   /// Call main function to save window geometry after a resize.
   @override
   void onWindowResize() async {
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    if (!kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.linux ||
+            defaultTargetPlatform == TargetPlatform.windows ||
+            defaultTargetPlatform == TargetPlatform.macOS)) {
       await saveWindowGeo();
     }
   }
@@ -105,7 +114,10 @@ class _FrameViewState extends State<FrameView> with WindowListener {
   /// Call main function to save window geometry after a move.
   @override
   void onWindowMove() async {
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    if (!kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.linux ||
+            defaultTargetPlatform == TargetPlatform.windows ||
+            defaultTargetPlatform == TargetPlatform.macOS)) {
       await saveWindowGeo();
     }
   }
