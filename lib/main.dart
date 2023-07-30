@@ -40,17 +40,19 @@ void main() async {
   );
   WidgetsFlutterBinding.ensureInitialized();
   prefs = await SharedPreferences.getInstance();
+  final stdWidth = 500.0;
+  final stdHeight = 800.0;
   if (!kIsWeb &&
       (defaultTargetPlatform == TargetPlatform.linux ||
           defaultTargetPlatform == TargetPlatform.windows ||
           defaultTargetPlatform == TargetPlatform.macOS)) {
     await windowManager.ensureInitialized();
-    var size = Size(500.0, 800.0);
+    var size = Size(stdWidth, stdHeight);
     double? offsetX, offsetY;
     if (prefs.getBool('save_window_geo') ?? true) {
       size = Size(
-        prefs.getDouble('win_size_x') ?? 500.0,
-        prefs.getDouble('win_size_y') ?? 900.0,
+        prefs.getDouble('win_size_x') ?? stdWidth,
+        prefs.getDouble('win_size_y') ?? stdHeight,
       );
       offsetX = prefs.getDouble('win_pos_x');
       offsetY = prefs.getDouble('win_pos_y');
@@ -59,7 +61,7 @@ void main() async {
     await windowManager.setSize(size);
     windowManager.waitUntilReadyToShow(null, () async {
       await windowManager.setTitle('rpCalc');
-      await windowManager.setMinimumSize(Size(270.0, 600.0));
+      await windowManager.setMinimumSize(Size(270.0, 650.0));
       await windowManager.setSize(size);
       if (offsetX != null && offsetY != null) {
         await windowManager.setPosition(Offset(offsetX, offsetY));
@@ -68,8 +70,41 @@ void main() async {
       allowSaveWindowGeo = prefs.getBool('save_window_geo') ?? true;
     });
   }
-  runApp(
-    ChangeNotifierProvider<Engine>(
+  if (kIsWeb) {
+    final ratio = prefs.getDouble('calc_scale') ?? 1.0;
+    runApp(
+      FractionallySizedBox(
+        widthFactor: 1 / ratio,
+        heightFactor: 1 / ratio,
+        child: Transform.scale(
+          scale: ratio,
+          child: Container(
+            color: Color(0xFFa2b7bd),
+            child: Center(
+              child: SizedBox(
+                width: stdWidth,
+                height: stdHeight,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: _RootApp(),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  } else {
+    runApp(_RootApp());
+  }
+}
+
+class _RootApp extends StatelessWidget {
+  _RootApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<Engine>(
       create: (context) => Engine(),
       child: MaterialApp(
         title: 'rpCalc',
@@ -82,8 +117,8 @@ void main() async {
         ),
         home: FrameView(),
       ),
-    ),
-  );
+    );
+  }
 }
 
 Future<void> saveWindowGeo() async {

@@ -11,7 +11,7 @@ import '../model/engine.dart';
 
 /// A user settings view.
 class SettingEdit extends StatefulWidget {
-  SettingEdit({Key? key}) : super(key: key);
+  SettingEdit({super.key});
 
   @override
   State<SettingEdit> createState() => _SettingEditState();
@@ -177,11 +177,37 @@ class _SettingEditState extends State<SettingEdit> {
                       }
                     },
                   ),
+                  if (kIsWeb)
+                    TextFormField(
+                      initialValue:
+                          (prefs.getDouble('calc_scale') ?? 1.0).toString(),
+                      decoration: const InputDecoration(
+                        labelText: 'Calculator view scale ratio',
+                      ),
+                      validator: (String? value) {
+                        if (value != null && value.isNotEmpty) {
+                          if (double.tryParse(value) == null) {
+                            return 'Must be an number';
+                          }
+                          final scale = double.parse(value);
+                          if (scale > 5.0 || scale < 0.2) {
+                            return 'Valid range is 0.2 to 5.0';
+                          }
+                        }
+                        return null;
+                      },
+                      onSaved: (String? value) async {
+                        if (value != null && value.isNotEmpty) {
+                          await prefs.setDouble(
+                              'calc_scale', double.parse(value));
+                        }
+                      },
+                    ),
                   TextFormField(
                     initialValue:
                         (prefs.getDouble('view_scale') ?? 1.0).toString(),
                     decoration: const InputDecoration(
-                      labelText: 'App view scale ratio',
+                      labelText: 'Auxilliary view scale ratio',
                     ),
                     validator: (String? value) {
                       if (value != null && value.isNotEmpty) {
