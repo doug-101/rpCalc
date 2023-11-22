@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0.0
+Name=rpCalc
+GenericName=Calculator
+Exec=rpcalc
+Icon=/opt/rpcalc/rpcalc_icon_64.png
+Terminal=false
+Categories=Utility;Calculator;
+Comment=A RPN calculator
