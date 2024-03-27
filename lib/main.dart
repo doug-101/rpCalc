@@ -3,6 +3,7 @@
 // Copyright (c) 2023, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -57,10 +58,20 @@ void main() async {
       offsetX = prefs.getDouble('win_pos_x');
       offsetY = prefs.getDouble('win_pos_y');
     }
-    // Setting the size twice (early and later) to work around linux problems.
+    // Setting size, etc. twice (early & later) to work around linux problems.
+    if (defaultTargetPlatform == TargetPlatform.linux &&
+        Platform.environment['XDG_SESSION_TYPE'] == 'wayland') {
+      // Avoid showing extra title bar under Wayland.
+      await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+    }
     await windowManager.setSize(size);
     windowManager.waitUntilReadyToShow(null, () async {
       await windowManager.setTitle('rpCalc');
+      if (defaultTargetPlatform == TargetPlatform.linux &&
+          Platform.environment['XDG_SESSION_TYPE'] == 'wayland') {
+        // Avoid showing extra title bar under Wayland.
+        await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+      }
       await windowManager.setMinimumSize(Size(270.0, 650.0));
       await windowManager.setSize(size);
       if (offsetX != null && offsetY != null) {
@@ -108,6 +119,7 @@ class _RootApp extends StatelessWidget {
       create: (context) => Engine(),
       child: MaterialApp(
         title: 'rpCalc',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
             brightness: Brightness.dark,
