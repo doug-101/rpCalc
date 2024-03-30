@@ -1,11 +1,12 @@
 // settings_edit.dart, a view to edit the app's preferences.
 // rpCalc, a calculator using reverse polish notation.
-// Copyright (c) 2023, Douglas W. Bell.
+// Copyright (c) 2024, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 import '../main.dart' show prefs, allowSaveWindowGeo, saveWindowGeo;
 import '../model/engine.dart';
 
@@ -65,21 +66,6 @@ class _SettingEditState extends State<SettingEdit> {
               padding: const EdgeInsets.all(10.0),
               child: ListView(
                 children: <Widget>[
-                  if (!kIsWeb &&
-                      (defaultTargetPlatform == TargetPlatform.linux ||
-                          defaultTargetPlatform == TargetPlatform.windows ||
-                          defaultTargetPlatform == TargetPlatform.macOS))
-                    BoolFormField(
-                      initialValue: prefs.getBool('save_window_geo') ?? true,
-                      heading: 'Remember Window Position and Size',
-                      onSaved: (bool? value) async {
-                        if (value != null) {
-                          await prefs.setBool('save_window_geo', value);
-                          allowSaveWindowGeo = value;
-                          if (allowSaveWindowGeo) saveWindowGeo();
-                        }
-                      },
-                    ),
                   DropdownButtonFormField<String>(
                     items: [
                       DropdownMenuItem<String>(
@@ -207,7 +193,7 @@ class _SettingEditState extends State<SettingEdit> {
                     initialValue:
                         (prefs.getDouble('view_scale') ?? 1.0).toString(),
                     decoration: const InputDecoration(
-                      labelText: 'Auxilliary view scale ratio',
+                      labelText: 'Auxilliary View Scale Ratio',
                     ),
                     validator: (String? value) {
                       if (value != null && value.isNotEmpty) {
@@ -228,6 +214,37 @@ class _SettingEditState extends State<SettingEdit> {
                       }
                     },
                   ),
+                  if (!kIsWeb &&
+                      (defaultTargetPlatform == TargetPlatform.linux ||
+                          defaultTargetPlatform == TargetPlatform.windows ||
+                          defaultTargetPlatform == TargetPlatform.macOS))
+                    BoolFormField(
+                      initialValue: prefs.getBool('save_window_geo') ?? true,
+                      heading: 'Remember Window Position and Size',
+                      onSaved: (bool? value) async {
+                        if (value != null) {
+                          await prefs.setBool('save_window_geo', value);
+                          allowSaveWindowGeo = value;
+                          if (allowSaveWindowGeo) saveWindowGeo();
+                        }
+                      },
+                    ),
+                  if (!kIsWeb &&
+                      (defaultTargetPlatform == TargetPlatform.linux ||
+                          defaultTargetPlatform == TargetPlatform.windows ||
+                          defaultTargetPlatform == TargetPlatform.macOS))
+                    BoolFormField(
+                      initialValue: prefs.getBool('show_title_bar') ?? true,
+                      heading: 'Show the Window Title Bar',
+                      onSaved: (bool? value) async {
+                        if (value != null) {
+                          await prefs.setBool('show_title_bar', value);
+                          await windowManager.setTitleBarStyle(
+                            value ? TitleBarStyle.normal : TitleBarStyle.hidden,
+                          );
+                        }
+                      },
+                    ),
                 ],
               ),
             ),

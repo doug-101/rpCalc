@@ -1,9 +1,8 @@
 // main.dart, the main app entry point file.
 // rpCalc, a calculator using reverse polish notation.
-// Copyright (c) 2023, Douglas W. Bell.
+// Copyright (c) 2024, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -59,17 +58,13 @@ void main() async {
       offsetY = prefs.getDouble('win_pos_y');
     }
     // Setting size, etc. twice (early & later) to work around linux problems.
-    if (defaultTargetPlatform == TargetPlatform.linux &&
-        Platform.environment['XDG_SESSION_TYPE'] == 'wayland') {
-      // Avoid showing extra title bar under Wayland.
+    if (!(prefs.getBool('show_title_bar') ?? true)) {
       await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
     }
     await windowManager.setSize(size);
     windowManager.waitUntilReadyToShow(null, () async {
       await windowManager.setTitle('rpCalc');
-      if (defaultTargetPlatform == TargetPlatform.linux &&
-          Platform.environment['XDG_SESSION_TYPE'] == 'wayland') {
-        // Avoid showing extra title bar under Wayland.
+      if (!(prefs.getBool('show_title_bar') ?? true)) {
         await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
       }
       await windowManager.setMinimumSize(Size(270.0, 650.0));
