@@ -24,7 +24,10 @@ class _SettingEditState extends State<SettingEdit> {
 
   final _formKey = GlobalKey<FormState>();
 
-  Future<bool> updateOnPop() async {
+  /// Prepare to close by validating and updating.
+  ///
+  /// Returns true if it's ok to close.
+  Future<bool> _handleClose() async {
     if (_cancelFlag) return true;
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -49,9 +52,19 @@ class _SettingEditState extends State<SettingEdit> {
         child: Scaffold(
           appBar: AppBar(
             title: Text('Settings - rpCalc'),
+            leading: IconButton(
+              icon: const Icon(Icons.check_circle),
+              tooltip: 'Save current settings and close',
+              onPressed: () async {
+                if (await _handleClose() && context.mounted) {
+                  Navigator.pop(context, null);
+                }
+              },
+            ),
             actions: <Widget>[
               IconButton(
                 icon: const Icon(Icons.close),
+                tooltip: 'Discard settings changes and close',
                 onPressed: () {
                   _cancelFlag = true;
                   Navigator.pop(context, null);
@@ -61,7 +74,15 @@ class _SettingEditState extends State<SettingEdit> {
           ),
           body: Form(
             key: _formKey,
-            onWillPop: updateOnPop,
+            canPop: false,
+            onPopInvoked: (bool didPop) async {
+              if (!didPop && await _handleClose()) {
+                // Pop manually (bypass canPop) if update is complete.
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              }
+            },
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: ListView(
