@@ -30,7 +30,8 @@ The "OPT" button brings up a menu.  This History View shows recent calculations
 in algebraic format.  The Memory View shows the contents of the ten memory
 registers.  The Settings item brings up various options.
 
-The Settings options include remembering the window size/position, display
-options (duplicates of dedicated key settings), the number of history entries
-to save, and a view scale ratio to enlarge the text in auxiliary views (useful
-for high-dpi screens).
+The Settings options include display options (duplicates of dedicated key
+settings), the number of history entries to save, a view scale ratio to enlarge
+the text in auxiliary views (useful for high-dpi screens), a toggle for the
+window size/position, and a toggle for showing the window title bar.  The last
+two options are only available on desktop platforms.

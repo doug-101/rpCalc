@@ -2,7 +2,7 @@
 
 # rpc_make.sh, a Linux build/install tool for rpCalc.
 # rpCalc, a calculator using reverse polish notation.
-# Copyright (c) 2023, Douglas W. Bell.
+# Copyright (c) 2024, Douglas W. Bell.
 # Free software, GPL v2 or later.
 
 depends_error () {
@@ -67,7 +67,7 @@ case "$1" in
         echo "Downloading Flutter..."
         flutter_site="https://storage.googleapis.com"
         flutter_path="/flutter_infra_release/releases/stable/linux/"
-        flutter_file="flutter_linux_3.16.0-stable.tar.xz"
+        flutter_file="flutter_linux_3.24.4-stable.tar.xz"
         curl -O $flutter_site$flutter_path$flutter_file \
             || misc_error "Error:  Could not download Flutter"
         echo

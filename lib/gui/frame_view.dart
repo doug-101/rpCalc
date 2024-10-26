@@ -222,7 +222,7 @@ class _FrameViewState extends State<FrameView> with WindowListener {
                               applicationName: 'rpCalc',
                               applicationVersion:
                                   'Version ${packageInfo.version}',
-                              applicationLegalese: '©2023 by Douglas W. Bell',
+                              applicationLegalese: '©2024 by Douglas W. Bell',
                               applicationIcon:
                                   Image.asset('assets/images/calc_icon_48.png'),
                             ),
