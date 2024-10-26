@@ -1,12 +1,9 @@
 // calc_button.dart, a widget for each calculator button.
 // rpCalc, a calculator using reverse polish notation.
-// Copyright (c) 2023, Douglas W. Bell.
+// Copyright (c) 2024, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../model/engine.dart';
 
 const _backgroundColor = Color(0xFF241b12);
 const _textColor = Color(0xFFe6cdb3);
@@ -21,7 +18,7 @@ class CalcButton extends StatelessWidget {
   final bool hasSuperscript;
   final double heightScaleFactor;
 
-  CalcButton({
+  const CalcButton({
     super.key,
     required this.label,
     required this.buttonKey,

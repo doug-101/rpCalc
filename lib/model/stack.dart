@@ -1,6 +1,6 @@
 // stack.dart, provides storage and rotation for a stack of 4 numbers.
 // rpCalc, a calculator using reverse polish notation.
-// Copyright (c) 2023, Douglas W. Bell.
+// Copyright (c) 2024, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
 import 'dart:collection';
@@ -10,21 +10,27 @@ class Stack extends ListBase<double> {
 
   Stack();
 
+  @override
   int get length => _innerList.length;
 
-  void set length(int length) {
+  @override
+  set length(int length) {
     _innerList.length = length;
   }
 
+  @override
   double operator [](int index) => _innerList[index];
 
+  @override
   void operator []=(int index, double value) {
     _innerList[index] = value;
   }
 
-  void add(double value) => _innerList.add(value);
+  @override
+  void add(double element) => _innerList.add(element);
 
-  void addAll(Iterable<double> all) => _innerList.addAll(all);
+  @override
+  void addAll(Iterable<double> iterable) => _innerList.addAll(iterable);
 
   /// Replace stack with [values].
   void replaceAll(Iterable<double> values) {

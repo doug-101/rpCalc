@@ -1,6 +1,6 @@
 // history_view.dart, an extra view showing a history list.
 // rpCalc, a calculator using reverse polish notation.
-// Copyright (c) 2023, Douglas W. Bell.
+// Copyright (c) 2024, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ import '../model/engine.dart';
 
 /// This provides a list with calculation history.
 class HistoryView extends StatefulWidget {
-  HistoryView({super.key});
+  const HistoryView({super.key});
 
   @override
   State<HistoryView> createState() => _HistoryViewState();

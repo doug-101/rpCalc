@@ -1,6 +1,6 @@
 // lcd_display.dart, a widget for the main number display.
 // rpCalc, a calculator using reverse polish notation.
-// Copyright (c) 2023, Douglas W. Bell.
+// Copyright (c) 2024, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ const _borderColor = Color(0xFFc0ad99);
 
 /// Provides the main display for the calculator registers.
 class LcdDisplay extends StatelessWidget {
-  LcdDisplay({super.key});
+  const LcdDisplay({super.key});
 
   @override
   Widget build(BuildContext context) {

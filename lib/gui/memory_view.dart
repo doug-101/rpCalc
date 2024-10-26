@@ -1,16 +1,15 @@
 // memory_view.dart, an extra view showing a memory register list.
 // rpCalc, a calculator using reverse polish notation.
-// Copyright (c) 2023, Douglas W. Bell.
+// Copyright (c) 2024, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../main.dart' show prefs;
 import '../model/engine.dart';
 
 /// This provides a list with calculation history.
 class MemoryView extends StatefulWidget {
-  MemoryView({super.key});
+  const MemoryView({super.key});
 
   @override
   State<MemoryView> createState() => _MemoryViewState();
@@ -19,7 +18,6 @@ class MemoryView extends StatefulWidget {
 class _MemoryViewState extends State<MemoryView> {
   @override
   Widget build(BuildContext context) {
-    final model = Provider.of<Engine>(context, listen: false);
     final ratio = prefs.getDouble('view_scale') ?? 1.0;
     return FractionallySizedBox(
       widthFactor: 1 / ratio,

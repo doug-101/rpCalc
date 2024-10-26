@@ -1,6 +1,6 @@
 // frame_view.dart, the main view's frame and controls.
 // rpCalc, a calculator using reverse polish notation.
-// Copyright (c) 2023, Douglas W. Bell.
+// Copyright (c) 2024, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
 import 'package:flutter/foundation.dart';
@@ -35,7 +35,7 @@ const _superscriptCmds = {'x2', 'yX', 'eX', 'tnX'};
 
 /// This provides the window, LCD display, button structure and other controls.
 class FrameView extends StatefulWidget {
-  FrameView({super.key});
+  const FrameView({super.key});
 
   @override
   State<FrameView> createState() => _FrameViewState();
@@ -209,6 +209,7 @@ class _FrameViewState extends State<FrameView> with WindowListener {
                     Navigator.pop(context);
                     final packageInfo = await PackageInfo.fromPlatform();
                     final ratio = prefs.getDouble('view_scale') ?? 1.0;
+                    if (!context.mounted) return;
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {

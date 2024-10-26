@@ -12,7 +12,7 @@ import '../model/engine.dart';
 
 /// A user settings view.
 class SettingEdit extends StatefulWidget {
-  SettingEdit({super.key});
+  const SettingEdit({super.key});
 
   @override
   State<SettingEdit> createState() => _SettingEditState();
@@ -27,7 +27,7 @@ class _SettingEditState extends State<SettingEdit> {
   /// Prepare to close by validating and updating.
   ///
   /// Returns true if it's ok to close.
-  Future<bool> _handleClose() async {
+  bool _handleClose() {
     if (_cancelFlag) return true;
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -35,7 +35,7 @@ class _SettingEditState extends State<SettingEdit> {
       if (model.flag != Mode.entry && model.flag != Mode.exponent) {
         model.updateXString();
       }
-      model.notifyListeners();
+      model.updateGui();
       return true;
     }
     return false;
@@ -56,7 +56,7 @@ class _SettingEditState extends State<SettingEdit> {
               icon: const Icon(Icons.check_circle),
               tooltip: 'Save current settings and close',
               onPressed: () async {
-                if (await _handleClose() && context.mounted) {
+                if (_handleClose() && context.mounted) {
                   Navigator.pop(context, null);
                 }
               },
@@ -75,8 +75,8 @@ class _SettingEditState extends State<SettingEdit> {
           body: Form(
             key: _formKey,
             canPop: false,
-            onPopInvoked: (bool didPop) async {
-              if (!didPop && await _handleClose()) {
+            onPopInvokedWithResult: (bool didPop, Object? result)  {
+              if (!didPop && _handleClose()) {
                 // Pop manually (bypass canPop) if update is complete.
                 if (context.mounted) {
                   Navigator.of(context).pop();
@@ -104,7 +104,7 @@ class _SettingEditState extends State<SettingEdit> {
                     decoration: const InputDecoration(
                       labelText: 'Angle Unit',
                     ),
-                    onChanged: (String? value) => null,
+                    onChanged: (String? value) {},
                     onSaved: (String? value) async {
                       if (value != null) {
                         await prefs.setBool('use_degrees', value == 'Degrees');
@@ -128,7 +128,7 @@ class _SettingEditState extends State<SettingEdit> {
                     decoration: const InputDecoration(
                       labelText: 'Notation Type',
                     ),
-                    onChanged: (String? value) => null,
+                    onChanged: (String? value) {},
                     onSaved: (String? value) async {
                       if (value != null) {
                         await prefs.setBool('use_fixed_nums', value == 'Fixed');
@@ -279,14 +279,11 @@ class _SettingEditState extends State<SettingEdit> {
 /// A [FormField] widget for boolean settings.
 class BoolFormField extends FormField<bool> {
   BoolFormField({
-    bool? initialValue,
+    super.initialValue,
     String? heading,
-    Key? key,
-    FormFieldSetter<bool>? onSaved,
+    super.key,
+    super.onSaved,
   }) : super(
-          onSaved: onSaved,
-          initialValue: initialValue,
-          key: key,
           builder: (FormFieldState<bool> state) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,

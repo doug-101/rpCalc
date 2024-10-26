@@ -1,6 +1,6 @@
 // help_view.dart, shows a view with Markdown output of the README file.
 // rpCalc, a calculator using reverse polish notation.
-// Copyright (c) 2023, Douglas W. Bell.
+// Copyright (c) 2024, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
 import 'package:flutter/material.dart';
@@ -11,6 +11,8 @@ import '../main.dart' show prefs;
 
 /// Provides a view with Markdown output of the README file.
 class HelpView extends StatefulWidget {
+  const HelpView({super.key});
+
   @override
   State<HelpView> createState() => _HelpViewState();
 }

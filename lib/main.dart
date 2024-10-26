@@ -106,7 +106,7 @@ void main() async {
 }
 
 class _RootApp extends StatelessWidget {
-  _RootApp({super.key});
+  const _RootApp();
 
   @override
   Widget build(BuildContext context) {

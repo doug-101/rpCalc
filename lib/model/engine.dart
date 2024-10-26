@@ -1,6 +1,6 @@
 // engine.dart, provides the model for the main calcualtions and storage.
 // rpCalc, a calculator using reverse polish notation.
-// Copyright (c) 2023, Douglas W. Bell.
+// Copyright (c) 2024, Douglas W. Bell.
 // Free software, GPL v2 or later.
 
 // foundation.dart includes [ChangeNotifier].
@@ -108,6 +108,11 @@ class Engine extends ChangeNotifier {
     }
   }
 
+  /// Perform a general GUI update.
+  void updateGui() {
+    notifyListeners();
+  }
+
   /// Set [xString] based on current stack value.
   ///
   /// Also clears show mode and stores the stack in shared_preferences.
@@ -208,7 +213,9 @@ class Engine extends ChangeNotifier {
           entryStr = '';
           notifyListeners();
           return cmd.toUpperCase();
-        } on StateError {}
+        } on StateError {
+          // Ignore if command not found.
+        }
       }
       return null;
     }
@@ -223,6 +230,7 @@ class Engine extends ChangeNotifier {
       notifyListeners();
       return null;
     }
+    return null;
   }
 
   /// Closure to handle number digit and decimal point entry.
@@ -653,7 +661,6 @@ class Engine extends ChangeNotifier {
 
   /// Handle backspace key press.
   void backspaceEntry() {
-    print(flag);
     if (flag.index >= Mode.memStore.index) {
       // Cancel special modes.
       flag = Mode.save;
@@ -683,12 +690,8 @@ class Engine extends ChangeNotifier {
 ///
 /// Use system preferences if [useFixed] and [numDecPlaces] are not given.
 String formatNumber(double number, {bool? useFixed, int? numDecPlaces}) {
-  if (useFixed == null) {
-    useFixed = prefs.getBool('use_fixed_nums') ?? true;
-  }
-  if (numDecPlaces == null) {
-    numDecPlaces = prefs.getInt('num_dec_plcs') ?? 4;
-  }
+  useFixed ??= prefs.getBool('use_fixed_nums') ?? true;
+  numDecPlaces ??= prefs.getInt('num_dec_plcs') ?? 4;
   final absNumber = number.abs();
   var exp = 0;
   if (absNumber != 0.0 &&
@@ -708,8 +711,8 @@ String formatNumber(double number, {bool? useFixed, int? numDecPlaces}) {
   var numberStr = number.toStringAsFixed(numDecPlaces);
   if (exp != 0 || !useFixed) {
     numberStr = exp >= 0
-        ? '${numberStr} E ${exp.toString().padLeft(3, '0')}'
-        : '${numberStr} E-${exp.abs().toString().padLeft(3, '0')}';
+        ? '$numberStr E ${exp.toString().padLeft(3, '0')}'
+        : '$numberStr E-${exp.abs().toString().padLeft(3, '0')}';
   }
   return numberStr;
 }
